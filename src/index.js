@@ -6,7 +6,7 @@ async function handleRequest(request) {
   const targetDomain = "poki.com";
   const url = new URL(request.url);
 
-  // 1. Route sub-resource requests correctly back to the target site
+  // 1. Route subpages and resources correctly back to the target site
   url.hostname = targetDomain;
   url.protocol = "https:";
 
@@ -17,23 +17,23 @@ async function handleRequest(request) {
     body: request.method !== "GET" && request.method !== "HEAD" ? await request.blob() : null
   });
 
-  // 3. Clone headers and remove security blocks
+  // 3. Clone headers and lift security layout restrictions
   let newHeaders = new Headers(response.headers);
   newHeaders.delete("X-Frame-Options");
   newHeaders.delete("Content-Security-Policy");
   newHeaders.set("Access-Control-Allow-Origin", "*");
 
-  // 4. Content Type Check: Only rewrite text, HTML, or JavaScript
+  // 4. Content Type Check: Only translate text-based webpage layouts
   const contentType = newHeaders.get("content-type") || "";
   if (contentType.includes("text") || contentType.includes("javascript") || contentType.includes("json")) {
     let text = await response.text();
 
-    // 5. Case-Sensitive Replacements to "Hzx"
-    // This replaces exact matches while preserving expected capitalization styles
+    // 5. Smart Case-Sensitive Replacements
+    // Negative lookahead (?!\.[a-z0-9_-]+) prevents matching strings inside URLs/extensions (e.g. poki.com, poki.js)
     text = text
-      .replace(/poki/g, "hzx")    // lowercase -> lowercase
-      .replace(/Poki/g, "Hzx")    // Title Case -> Title Case
-      .replace(/POKI/g, "HZX");   // UPPERCASE -> UPPERCASE
+      .replace(/poki(?!\.[a-z0-9_-]+)/g, "hzx")   // lowercase -> lowercase
+      .replace(/Poki(?!\.[a-z0-9_-]+)/g, "Hzx")   // Title Case -> Title Case
+      .replace(/POKI(?!\.[a-z0-9_-]+)/g, "HZX");  // UPPERCASE -> UPPERCASE
 
     return new Response(text, {
       status: response.status,
@@ -42,7 +42,7 @@ async function handleRequest(request) {
     });
   }
 
-  // 6. Return binaries (images, webassembly, audio) unmodified
+  // 6. Return raw binaries (images, icons, webassembly, audio) completely unmodified
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,

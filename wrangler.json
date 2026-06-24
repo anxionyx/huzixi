@@ -1,9 +1,7 @@
 {
   "name": "huzixi",
   "main": "src/index.js",
-  "compatibility_date": "2022-04-05",
-  "assets": {
-    "directory": "./public"
+  "compatibility_date": "2022-04-05"
   }
 }
 

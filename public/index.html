@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JIAHAO TERMINAL | 嘉豪终端</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--cyan:#00ccff;
+--bg:#050712;
+--glass:rgba(255,255,255,0.06);
+--glass-line:rgba(0,204,255,0.2);
+--text:#e6f7ff;
+--shadow:0 0 30px rgba(0,204,255,0.15);
+}
+body{
+font-family:"Segoe UI",Consolas,system-ui;
+background:var(--bg);
+color:var(--text);
+overflow:hidden;
+height:100vh;
+cursor:url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='2' stroke='%2300ccff' stroke-width='1' fill='none'/%3E%3Cline x1='0' y1='10' x2='7' y2='10' stroke='%2300ccff' stroke-width='0.8'/%3E%3Cline x1='13' y1='10' x2='20' y2='10' stroke='%2300ccff' stroke-width='0.8'/%3E%3Cline x1='10' y1='0' x2='10' y2='7' stroke='%2300ccff' stroke-width='0.8'/%3E%3Cline x1='10' y1='13' x2='10' y2='20' stroke='%2300ccff' stroke-width='0.8'/%3E%3C/svg%3E"),auto;
+}
+
+/* 开机加载页 */
+#bootScreen{
+position:fixed;inset:0;background:#000;z-index:9999;
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+transition:opacity 0.8s ease;
+}
+.boot-text{color:var(--cyan);font-family:Consolas;font-size:16px;margin-bottom:20px;letter-spacing:2px;}
+.boot-bar{width:300px;height:4px;background:#111;border-radius:99px;overflow:hidden;}
+.boot-fill{height:100%;width:0;background:linear-gradient(90deg,#0088ff,#00eeff);box-shadow:0 0 10px #00ccff;animation:bootLoad 2.2s ease-out forwards;}
+@keyframes bootLoad{0%{width:0}100%{width:100%}}
+
+/* 粒子背景 */
+#particles{position:fixed;inset:0;z-index:0;opacity:0.8}
+
+/* 玻璃通用样式 */
+.glass{
+background:var(--glass);
+backdrop-filter:blur(16px);
+-webkit-backdrop-filter:blur(16px);
+border:1px solid var(--glass-line);
+border-radius:18px;
+box-shadow:var(--shadow);
+transition:all 0.35s cubic-bezier(0.2,0,0.2,1);
+}
+.glass:hover{
+transform:translateY(-6px);
+box-shadow:0 0 50px rgba(0,204,255,0.25);
+border-color:rgba(0,204,255,0.45);
+}
+
+/* 顶部导航 */
+nav{
+position:fixed;top:24px;left:50%;transform:translateX(-50%);
+width:min(92%,1100px);padding:14px 32px;z-index:99;
+display:flex;justify-content:space-between;align-items:center;
+}
+.logo{font-size:20px;font-weight:600;color:var(--cyan);letter-spacing:3px}
+.nav-list{display:flex;gap:36px}
+.nav-list a{color:#b8e6ff;text-decoration:none;font-size:14px;position:relative;transition:0.3s}
+.nav-list a::after{content:"";position:absolute;bottom:-6px;left:0;width:0;height:1px;background:var(--cyan);transition:0.3s}
+.nav-list a:hover{color:var(--cyan)}
+.nav-list a:hover::after{width:100%}
+
+/* 主内容 */
+main{
+position:relative;z-index:2;
+width:min(92%,1100px);margin:0 auto;
+padding-top:130px;height:calc(100vh - 80px);
+overflow-y:auto;
+}
+main::-webkit-scrollbar{width:6px}
+main::-webkit-scrollbar-thumb{background:rgba(0,204,255,0.3);border-radius:99px}
+
+/* 标题区 */
+.hero{text-align:center;margin-bottom:70px}
+.hero h1{
+font-size:68px;margin-bottom:16px;
+background:linear-gradient(90deg,#66e0ff,#0077ff,#66e0ff);
+background-size:200% auto;
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+animation:gradient 5s linear infinite;
+}
+@keyframes gradient{0%{background-position:0%}100%{background-position:200%}}
+.hero p{color:#8ec8e8;letter-spacing:4px;font-size:17px}
+
+/* 卡片网格 */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:26px;
+margin-bottom:60px;
+}
+.card{padding:32px}
+.card h3{
+font-size:20px;margin-bottom:18px;color:var(--cyan);
+display:flex;align-items:center;gap:10px;
+}
+.card p{line-height:1.8;color:#b8d8f0;font-size:15px;white-space:pre-line}
+
+/* 技能条 */
+.skill-item{margin:20px 0}
+.skill-head{display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#cde8f8}
+.skill-bar{width:100%;height:6px;background:rgba(0,204,255,0.1);border-radius:99px;overflow:hidden}
+.skill-fill{
+height:100%;border-radius:99px;
+background:linear-gradient(90deg,#0099ff,#00eeff);
+box-shadow:0 0 12px #00ccff;
+animation:fillBar 2.5s ease-out forwards;
+}
+@keyframes fillBar{0%{width:0}100%{width:var(--w)}}
+
+/* 底部状态栏 */
+.status-bar{
+position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+padding:10px 28px;font-size:13px;color:#88b8d8;z-index:99;letter-spacing:1px;
+}
+</style>
+</head>
+<body>
+
+<!-- 开机动画 -->
+<div id="bootScreen">
+    <div class="boot-text">JIAHAO TERMINAL 正在启动...</div>
+    <div class="boot-bar"><div class="boot-fill"></div></div>
+</div>
+
+<!-- 粒子背景 -->
+<canvas id="particles"></canvas>
+
+<!-- 导航栏 -->
+<nav class="glass">
+    <div class="logo">JIAHAO · 嘉豪</div>
+    <div class="nav-list">
+        <a href="#about">身份档案</a>
+        <a href="#skill">能力面板</a>
+        <a href="#project">项目终端</a>
+        <a href="#link">联络通道</a>
+    </div>
+</nav>
+
+<main>
+    <section class="hero">
+        <h1 id="title"></h1>
+        <p>FRONT-END DEVELOPER · DIGITAL CREATOR</p>
+    </section>
+
+    <div class="grid">
+        <div class="glass card" id="about">
+            <h3>◈ 身份档案</h3>
+            <p>代号：嘉豪
+前端视觉交互开发者，专注高端科技界面设计与实现。
+擅长沉浸式网页终端、仿真系统、动态数据可视化，追求极致光影细节与丝滑动效，拒绝廉价特效堆砌。</p>
+        </div>
+
+        <div class="glass card" id="skill">
+            <h3>◈ 能力数据流</h3>
+            <div class="skill-item">
+                <div class="skill-head"><span>前端页面构建</span><span>95%</span></div>
+                <div class="skill-bar"><div class="skill-fill" style="--w:95%"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-head"><span>交互动效开发</span><span>88%</span></div>
+                <div class="skill-bar"><div class="skill-fill" style="--w:88%"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-head"><span>UI视觉设计</span><span>82%</span></div>
+                <div class="skill-bar"><div class="skill-fill" style="--w:82%"></div></div>
+            </div>
+        </div>
+
+        <div class="glass card" id="project">
+            <h3>◈ 终端项目库</h3>
+            <p>▫ Web 仿真桌面操作系统
+▫ 赛博朋克粒子个人终端
+▫ 科技风数据可视化仪表盘
+▫ 3D 立体交互展示页面
+▫ 黑客终端命令行模拟器</p>
+        </div>
+
+        <div class="glass card" id="link">
+            <h3>◈ 通讯通道</h3>
+            <p>本地终端：Jiahao@Local
+设备编号：DEV-2026-CN
+运行状态：ONLINE · 正常
+系统版本：v2.0 终极版</p>
+        </div>
+    </div>
+</main>
+
+<!-- 底部状态栏 -->
+<div class="status-bar glass">
+    <span id="time"></span> | JIAHAO TERMINAL SYSTEM
+</div>
+
+<script>
+// 1. 开机动画
+window.onload = ()=>{
+    setTimeout(()=>{
+        document.getElementById('bootScreen').style.opacity = '0';
+        setTimeout(()=>{
+            document.getElementById('bootScreen').style.display = 'none';
+            typeWriter();
+        },800);
+    },2300);
+};
+
+// 2. 标题打字机
+const titleText = "JIAHAO · 嘉豪";
+const titleDom = document.getElementById('title');
+let titleIndex = 0;
+function typeWriter(){
+    if(titleIndex < titleText.length){
+        titleDom.innerText += titleText[titleIndex];
+        titleIndex++;
+        setTimeout(typeWriter, 150);
+    }
+}
+
+// 3. 实时时钟
+function updateTime(){
+    const now = new Date();
+    document.getElementById('time').innerText = now.toLocaleString('zh-CN');
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// 4. 粒子背景
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let w, h, particles = [], mouseX = 0, mouseY = 0;
+
+function resize(){
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+}
+resize();
+addEventListener('resize', resize);
+addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY });
+
+class Particle{
+    constructor(){
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.r = Math.random() * 1.8 + 0.5;
+        this.sx = (Math.random()-0.5) * 0.7;
+        this.sy = (Math.random()-0.5) * 0.7;
+    }
+    update(){
+        this.x += this.sx;
+        this.y += this.sy;
+        // 鼠标引力
+        const dx = mouseX - this.x;
+        const dy = mouseY - this.y;
+        this.x += dx * 0.0007;
+        this.y += dy * 0.0007;
+        // 边界循环
+        if(this.x < 0) this.x = w;
+        if(this.x > w) this.x = 0;
+        if(this.y < 0) this.y = h;
+        if(this.y > h) this.y = 0;
+    }
+    draw(){
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(0,204,255,0.65)';
+        ctx.fill();
+    }
+}
+
+for(let i=0; i<130; i++) particles.push(new Particle());
+
+function render(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(render);
+}
+render();
+</script>
+</body>
+</html>
+

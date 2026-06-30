@@ -1,408 +1,272 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JIAHAO TERMINAL | 嘉豪装逼终端</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
---cyan:#00ccff;
---bg:#050712;
---glass:rgba(255,255,255,0.06);
---glass-line:rgba(0,204,255,0.2);
---text:#e6f7ff;
---shadow:0 0 30px rgba(0,204,255,0.15);
-}
-body{
-font-family:"Segoe UI",Consolas,system-ui;
-background:var(--bg);
-color:var(--text);
-overflow:hidden;
-height:100vh;
-cursor:url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='2' stroke='%2300ccff' stroke-width='1' fill='none'/%3E%3Cline x1='0' y1='10' x2='7' y2='10' stroke='%2300ccff' stroke-width='0.8'/%3E%3Cline x1='13' y1='10' x2='20' y2='10' stroke='%2300ccff' stroke-width='0.8'/%3E%3Cline x1='10' y1='0' x2='10' y2='7' stroke='%2300ccff' stroke-width='0.8'/%3E%3Cline x1='10' y1='13' x2='10' y2='20' stroke='%2300ccff' stroke-width='0.8'/%3E%3C/svg%3E"),auto;
-}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify with reCAPTCHA</title>
 
-/* 开机加载页 */
-#bootScreen{
-position:fixed;inset:0;background:#000;z-index:9999;
-display:flex;flex-direction:column;align-items:center;justify-content:center;
-transition:opacity 0.8s ease;
-}
-.boot-text{color:var(--cyan);font-family:Consolas;font-size:16px;margin-bottom:20px;letter-spacing:2px;}
-.boot-bar{width:300px;height:4px;background:#111;border-radius:99px;overflow:hidden;}
-.boot-fill{height:100%;width:0;background:linear-gradient(90deg,#0088ff,#00eeff);box-shadow:0 0 10px #00ccff;animation:bootLoad 2.2s ease-out forwards;}
-@keyframes bootLoad{0%{width:0}100%{width:100%}}
+    <!--
+    ============================================================
+    IMPORTANT – reCAPTCHA Site Key
+    ============================================================
+    Replace "YOUR_SITE_KEY" below with your own reCAPTCHA v2
+    site key from the Google Admin Console.
 
-/* 3D背景几何体 */
-.geometry-wrap{position:fixed;inset:0;z-index:1;pointer-events:none;perspective:1000px;overflow:hidden}
-.cube{
-position:absolute;width:80px;height:80px;
-transform-style:preserve-3d;animation:cubeRotate 15s linear infinite;
-opacity:0.15;
-}
-.cube div{
-position:absolute;width:100%;height:100%;
-border:1px solid var(--cyan);background:rgba(0,204,255,0.03);
-}
-.cube .front{transform:translateZ(40px)}
-.cube .back{transform:rotateY(180deg) translateZ(40px)}
-.cube .left{transform:rotateY(-90deg) translateZ(40px)}
-.cube .right{transform:rotateY(90deg) translateZ(40px)}
-.cube .top{transform:rotateX(90deg) translateZ(40px)}
-.cube .bottom{transform:rotateX(-90deg) translateZ(40px)}
-.cube.c1{top:15%;left:10%;animation-delay:0s}
-.cube.c2{top:60%;right:8%;animation-delay:-5s;width:60px;height:60px}
-.cube.c3{bottom:20%;left:15%;animation-delay:-10s;width:100px;height:100px}
-@keyframes cubeRotate{
-0%{transform:rotateX(0) rotateY(0)}
-100%{transform:rotateX(360deg) rotateY(360deg)}
-}
+    For local testing, you may use Google's public test key:
+      Site key:   6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+      Secret key: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
 
-/* 粒子背景 */
-#particles{position:fixed;inset:0;z-index:0;opacity:0.8}
+    The test key always works for demo purposes.
+    ============================================================
+    -->
 
-/* 玻璃通用样式 + 3D基础 */
-.glass{
-background:var(--glass);
-backdrop-filter:blur(16px);
--webkit-backdrop-filter:blur(16px);
-border:1px solid var(--glass-line);
-border-radius:18px;
-box-shadow:var(--shadow);
-transition:all 0.35s cubic-bezier(0.2,0,0.2,1);
-transform-style:preserve-3d;
-}
-.card-3d{transform-style:preserve-3d}
-.card-3d:hover{
-box-shadow:0 0 50px rgba(0,204,255,0.25);
-border-color:rgba(0,204,255,0.45);
-}
+    <style>
+        /* ---------- Reset & Base ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* 顶部导航 */
-nav{
-position:fixed;top:24px;left:50%;transform:translateX(-50%);
-width:min(92%,1100px);padding:14px 32px;z-index:99;
-display:flex;justify-content:space-between;align-items:center;
-transform:translateX(-50%) translateZ(50px);
-}
-.logo{font-size:20px;font-weight:600;color:var(--cyan);letter-spacing:3px}
-.nav-list{display:flex;gap:36px}
-.nav-list a{color:#b8e6ff;text-decoration:none;font-size:14px;position:relative;transition:0.3s}
-.nav-list a::after{content:"";position:absolute;bottom:-6px;left:0;width:0;height:1px;background:var(--cyan);transition:0.3s}
-.nav-list a:hover{color:var(--cyan)}
-.nav-list a:hover::after{width:100%}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, #f5f7fa 0%, #e9edf5 100%);
+            padding: 1.5rem;
+        }
 
-/* 主内容 3D透视容器 */
-main{
-position:relative;z-index:2;
-width:min(92%,1100px);margin:0 auto;
-padding-top:130px;height:calc(100vh - 80px);
-overflow-y:auto;
-perspective:1200px;
-}
-main::-webkit-scrollbar{width:6px}
-main::-webkit-scrollbar-thumb{background:rgba(0,204,255,0.3);border-radius:99px}
+        /* ---------- Card ---------- */
+        .captcha-card {
+            background: #ffffff;
+            max-width: 480px;
+            width: 100%;
+            padding: 2.8rem 2.2rem 3rem;
+            border-radius: 32px;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.10),
+                0 8px 24px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
 
-/* 3D立体标题 */
-.hero{text-align:center;margin-bottom:70px;transform:translateZ(30px)}
-.hero h1{
-font-size:72px;margin-bottom:16px;
-background:linear-gradient(90deg,#66e0ff,#0077ff,#66e0ff);
-background-size:200% auto;
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-animation:gradient 5s linear infinite;
-text-shadow:0 0 30px rgba(0,204,255,0.5);
-transform:rotateX(10deg);
-letter-spacing:4px;
-}
-@keyframes gradient{0%{background-position:0%}100%{background-position:200%}}
-.hero p{color:#8ec8e8;letter-spacing:4px;font-size:17px}
+        .captcha-card:hover {
+            transform: translateY(-2px);
+        }
 
-/* 卡片网格 */
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:26px;
-margin-bottom:60px;
-}
-.card{
-padding:32px;
-opacity:0;
-transform:translateZ(-100px) translateY(30px);
-animation:cardIn 0.8s ease forwards;
-}
-.card:nth-child(1){animation-delay:0.1s}
-.card:nth-child(2){animation-delay:0.25s}
-.card:nth-child(3){animation-delay:0.4s}
-.card:nth-child(4){animation-delay:0.55s}
-@keyframes cardIn{
-to{opacity:1;transform:translateZ(0) translateY(0)}
-}
-.card h3{
-font-size:20px;margin-bottom:18px;color:var(--cyan);
-display:flex;align-items:center;gap:10px;
-transform:translateZ(20px);
-}
-.card p{line-height:1.8;color:#b8d8f0;font-size:15px;white-space:pre-line;transform:translateZ(10px)}
+        /* ---------- Icon & Title ---------- */
+        .icon-shield {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            background: #eef3fe;
+            border-radius: 50%;
+            margin-bottom: 1.2rem;
+            font-size: 2.4rem;
+        }
 
-/* 技能条 */
-.skill-item{margin:20px 0;transform:translateZ(15px)}
-.skill-head{display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#cde8f8}
-.skill-bar{width:100%;height:6px;background:rgba(0,204,255,0.1);border-radius:99px;overflow:hidden}
-.skill-fill{
-height:100%;border-radius:99px;
-background:linear-gradient(90deg,#0099ff,#00eeff);
-box-shadow:0 0 12px #00ccff;
-animation:fillBar 2.5s ease-out forwards;
-}
-@keyframes fillBar{0%{width:0}100%{width:var(--w)}}
+        h1 {
+            font-size: 1.7rem;
+            font-weight: 600;
+            color: #1a2639;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.35rem;
+        }
 
-/* 3D翻转徽章 */
-.badge-wrap{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
-.badge{
-width:70px;height:70px;
-position:relative;
-transform-style:preserve-3d;
-transition:transform 0.6s;
-cursor:pointer;
-}
-.badge:hover{transform:rotateY(180deg)}
-.badge-face{
-position:absolute;inset:0;
-border-radius:12px;
-display:flex;align-items:center;justify-content:center;
-font-size:12px;text-align:center;
-backface-visibility:hidden;
-border:1px solid var(--cyan);
-background:rgba(0,204,255,0.1);
-color:var(--cyan);
-}
-.badge-back{transform:rotateY(180deg);background:rgba(0,204,255,0.15)}
+        .subtitle {
+            font-size: 0.95rem;
+            color: #5e6f8d;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
 
-/* 底部状态栏 */
-.status-bar{
-position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-padding:10px 28px;font-size:13px;color:#88b8d8;z-index:99;letter-spacing:1px;
-}
-</style>
+        /* ---------- reCAPTCHA Container ---------- */
+        .recaptcha-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 1.2rem 0 1.8rem;
+            min-height: 78px;
+            /* reserve space for the widget */;
+        }
+
+        /* ---------- Status Messages ---------- */
+        .status {
+            font-size: 0.92rem;
+            min-height: 1.8rem;
+            margin-top: 0.5rem;
+            transition: opacity 0.25s ease;
+        }
+
+        .status.pending {
+            color: #7a8aa3;
+        }
+
+        .status.success {
+            color: #0f7b3e;
+            font-weight: 500;
+        }
+
+        .status.error {
+            color: #b3363a;
+            font-weight: 500;
+        }
+
+        /* ---------- Footer ---------- */
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.78rem;
+            color: #9aabbf;
+            border-top: 1px solid #eef2f7;
+            padding-top: 1.4rem;
+            letter-spacing: 0.2px;
+        }
+
+        .footer-note code {
+            background: #f0f4fc;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #2c3e66;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 480px) {
+            .captcha-card {
+                padding: 2rem 1.2rem 2.2rem;
+            }
+            h1 {
+                font-size: 1.4rem;
+            }
+            .icon-shield {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- 开机动画 -->
-<div id="bootScreen">
-    <div class="boot-text">JIAHAO 装逼系统 正在启动...</div>
-    <div class="boot-bar"><div class="boot-fill"></div></div>
-</div>
+    <div class="captcha-card" role="main" aria-labelledby="captcha-title">
 
-<!-- 3D背景几何体 -->
-<div class="geometry-wrap">
-    <div class="cube c1">
-        <div class="front"></div><div class="back"></div>
-        <div class="left"></div><div class="right"></div>
-        <div class="top"></div><div class="bottom"></div>
-    </div>
-    <div class="cube c2">
-        <div class="front"></div><div class="back"></div>
-        <div class="left"></div><div class="right"></div>
-        <div class="top"></div><div class="bottom"></div>
-    </div>
-    <div class="cube c3">
-        <div class="front"></div><div class="back"></div>
-        <div class="left"></div><div class="right"></div>
-        <div class="top"></div><div class="bottom"></div>
-    </div>
-</div>
+        <!-- Icon -->
+        <div class="icon-shield" aria-hidden="true">🛡️</div>
 
-<!-- 粒子背景 -->
-<canvas id="particles"></canvas>
+        <!-- Title -->
+        <h1 id="captcha-title">Verify you're human</h1>
+        <p class="subtitle">
+            Please complete the reCAPTCHA challenge below to continue.
+        </p>
 
-<!-- 导航栏 -->
-<nav class="glass">
-    <div class="logo">JIAHAO · 嘉豪</div>
-    <div class="nav-list">
-        <a href="#about">装逼档案</a>
-        <a href="#skill">核心能力</a>
-        <a href="#record">经典战绩</a>
-        <a href="#honor">荣誉认证</a>
-    </div>
-</nav>
-
-<main>
-    <section class="hero">
-        <h1 id="title"></h1>
-        <p>国家级装逼艺术家 · 课堂氛围天花板</p>
-    </section>
-
-    <div class="grid">
-        <div class="glass card card-3d" id="about">
-            <h3>◈ 装逼大师档案</h3>
-            <p>代号：嘉豪
-职业：信息课装逼天花板
-擅长：用最少的代码装最狠的逼
-信条：只要界面够炫，没人在乎你写了啥
-战绩：连续3学期信息课展示全场焦点
-座右铭：无形装逼，最为致命</p>
+        <!-- reCAPTCHA Widget -->
+        <div class="recaptcha-wrapper">
+            <div
+            class="g-recaptcha"
+            data-sitekey="6Lc5eD0tAAAAAPqUhsX1wIvPKvUx4dUzGd8f3-0Q"
+            data-callback="onCaptchaSuccess"
+            data-expired-callback="onCaptchaExpired"
+            data-error-callback="onCaptchaError"
+            data-theme="light"
+            data-size="normal"
+            ></div>
         </div>
 
-        <div class="glass card card-3d" id="skill">
-            <h3>◈ 装逼核心技能</h3>
-            <div class="skill-item">
-                <div class="skill-head"><span>科技界面造景</span><span>99%</span></div>
-                <div class="skill-bar"><div class="skill-fill" style="--w:99%"></div></div>
-            </div>
-            <div class="skill-item">
-                <div class="skill-head"><span>临场装逼发挥</span><span>95%</span></div>
-                <div class="skill-bar"><div class="skill-fill" style="--w:95%"></div></div>
-            </div>
-            <div class="skill-item">
-                <div class="skill-head"><span>冷场救场能力</span><span>92%</span></div>
-                <div class="skill-bar"><div class="skill-fill" style="--w:92%"></div></div>
-            </div>
+        <!-- Status Message -->
+        <div id="statusMessage" class="status pending">
+            ⏳ Awaiting verification…
         </div>
 
-        <div class="glass card card-3d" id="record">
-            <h3>◈ 经典装逼战绩</h3>
-            <p>▫ 信息课单页网页震惊全班
-▫ 仿真操作系统骗过课代表
-▫ 纯CSS特效被误以为是3D软件做的
-▫ 机房断网依旧完整运行所有效果
-▫ 老师路过都停下来看了三秒</p>
-        </div>
-
-        <div class="glass card card-3d" id="honor">
-            <h3>◈ 荣誉认证徽章</h3>
-            <p>鼠标悬浮查看详情</p>
-            <div class="badge-wrap">
-                <div class="badge">
-                    <div class="badge-face">装逼王者</div>
-                    <div class="badge-face badge-back">Lv.MAX</div>
-                </div>
-                <div class="badge">
-                    <div class="badge-face">课堂焦点</div>
-                    <div class="badge-face badge-back">全场瞩目</div>
-                </div>
-                <div class="badge">
-                    <div class="badge-face">零翻车</div>
-                    <div class="badge-face badge-back">100%成功</div>
-                </div>
-                <div class="badge">
-                    <div class="badge-face">科技感</div>
-                    <div class="badge-face badge-back">拉满</div>
-                </div>
-            </div>
+        <!-- Footer -->
+        <div class="footer-note">
+            <span>🔐 Protected by reCAPTCHA &bull; </span>
+            <span>Redirects to <code>/rindex.html</code></span>
         </div>
     </div>
-</main>
 
-<!-- 底部状态栏 -->
-<div class="status-bar glass">
-    <span id="time"></span> | 装逼系统运行中 · 状态极佳
-</div>
+    <!-- ============================================================
+    Google reCAPTCHA API – loaded asynchronously
+    ============================================================ -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer>
+    </script>
 
-<script>
-// 1. 开机动画
-window.onload = ()=>{
-    setTimeout(()=>{
-        document.getElementById('bootScreen').style.opacity = '0';
-        setTimeout(()=>{
-            document.getElementById('bootScreen').style.display = 'none';
-            typeWriter();
-            initCardTilt();
-        },800);
-    },2300);
-};
+    <!-- ============================================================
+    Application Logic
+    ============================================================ -->
+    <script>
+        /**
+         * Get a reference to the status message element.
+         */
+        const statusEl = document.getElementById('statusMessage');
 
-// 2. 标题打字机
-const titleText = "JIAHAO · 嘉豪";
-const titleDom = document.getElementById('title');
-let titleIndex = 0;
-function typeWriter(){
-    if(titleIndex < titleText.length){
-        titleDom.innerText += titleText[titleIndex];
-        titleIndex++;
-        setTimeout(typeWriter, 150);
-    }
-}
+        /**
+         * Update the status message with a given text and CSS class.
+         * @param {string} text  - The message to display.
+         * @param {string} type  - 'pending' | 'success' | 'error'
+         */
+        function setStatus(text, type) {
+            statusEl.textContent = text;
+            statusEl.className = 'status ' + type;
+        }
 
-// 3. 实时时钟
-function updateTime(){
-    const now = new Date();
-    document.getElementById('time').innerText = now.toLocaleString('zh-CN');
-}
-setInterval(updateTime, 1000);
-updateTime();
+        /**
+         * Called when the user successfully completes the reCAPTCHA.
+         * Redirects to /rindex.html after a short delay (so the user
+         * can see the success feedback).
+         */
+        function onCaptchaSuccess(token) {
+            // token is the reCAPTCHA response token (not needed for redirect)
+            console.log('✅ reCAPTCHA succeeded, token:', token);
 
-// 4. 粒子背景
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-let w, h, particles = [], mouseX = 0, mouseY = 0;
+            // Show success message
+            setStatus('✅ Verification successful! Redirecting…', 'success');
 
-function resize(){
-    w = canvas.width = innerWidth;
-    h = canvas.height = innerHeight;
-}
-resize();
-addEventListener('resize', resize);
-addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY });
+            // Redirect to /rindex.html after a brief pause (300ms)
+            // so the user sees the success state before the page changes.
+            setTimeout(function() {
+                window.location.href = '/rindex.html';
+            }, 300);
+        }
 
-class Particle{
-    constructor(){
-        this.x = Math.random() * w;
-        this.y = Math.random() * h;
-        this.r = Math.random() * 1.8 + 0.5;
-        this.sx = (Math.random()-0.5) * 0.7;
-        this.sy = (Math.random()-0.5) * 0.7;
-    }
-    update(){
-        this.x += this.sx;
-        this.y += this.sy;
-        const dx = mouseX - this.x;
-        const dy = mouseY - this.y;
-        this.x += dx * 0.0007;
-        this.y += dy * 0.0007;
-        if(this.x < 0) this.x = w;
-        if(this.x > w) this.x = 0;
-        if(this.y < 0) this.y = h;
-        if(this.y > h) this.y = 0;
-    }
-    draw(){
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
-        ctx.fillStyle = 'rgba(0,204,255,0.65)';
-        ctx.fill();
-    }
-}
+        /**
+         * Called when the reCAPTCHA response expires (user must re-verify).
+         */
+        function onCaptchaExpired() {
+            console.warn('⏳ reCAPTCHA expired — user must verify again.');
+            setStatus('⏳ Verification expired — please try again.', 'pending');
+        }
 
-for(let i=0; i<130; i++) particles.push(new Particle());
+        /**
+         * Called when an error occurs in the reCAPTCHA widget.
+         */
+        function onCaptchaError() {
+            console.error('❌ reCAPTCHA error occurred.');
+            setStatus('❌ An error occurred. Please refresh and try again.', 'error');
+        }
 
-function render(){
-    ctx.clearRect(0,0,w,h);
-    particles.forEach(p => { p.update(); p.draw(); });
-    requestAnimationFrame(render);
-}
-render();
+        // -----------------------------------------------------------------
+        // (Optional) If you want to reset the reCAPTCHA programmatically,
+        // you can use: grecaptcha.reset()
+        // Expose it globally for debugging if needed.
+        // -----------------------------------------------------------------
+        window.resetCaptcha = function() {
+            if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
+                grecaptcha.reset();
+                setStatus('⏳ Reset — please verify again.', 'pending');
+                console.log('🔄 reCAPTCHA reset.');
+            } else {
+                console.warn('⚠️ grecaptcha not yet loaded.');
+            }
+        };
 
-// 5. 卡片3D倾斜效果
-function initCardTilt(){
-    const cards = document.querySelectorAll('.card-3d');
-    cards.forEach(card=>{
-        card.addEventListener('mousemove', e=>{
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / 15;
-            const rotateY = (centerX - x) / 15;
-            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
-        });
-        card.addEventListener('mouseleave', ()=>{
-            card.style.transform = 'rotateX(0) rotateY(0) translateY(0)';
-        });
-    })
-}
-</script>
+        // Log that the page is ready
+        console.log('🚀 reCAPTCHA page loaded. Site key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI (test key)');
+        console.log('ℹ️  Replace with your own site key for production.');
+    </script>
+
 </body>
 </html>
